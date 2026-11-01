@@ -1,0 +1,37 @@
+@import "tailwindcss";
+
+@theme {
+  --color-graphite: #2b2f33;
+  --color-paper: #f4f2ee;
+  --color-terra: #c2552d;
+  --color-terra-dark: #a84722;
+  --color-steel: #5b6b78;
+  --color-ink: #1e1e1e;
+  --color-line: #e1ddd5;
+  --color-placeholder: #e9e6e0;
+  --color-stock: #4a7c59;
+  --color-chat: #ece5dd;
+  --font-sans: var(--font-manrope), system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+html {
+  /* Крупный текст на телефоне */
+  font-size: 17px;
+  scroll-behavior: auto;
+  -webkit-text-size-adjust: 100%;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+}
+
+summary::-webkit-details-marker {
+  display: none;
+}
