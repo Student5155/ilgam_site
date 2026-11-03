@@ -2,29 +2,28 @@
 
 @theme {
   --color-graphite: #2b2f33;
+  --color-graphite-2: #353a3f;
   --color-paper: #f4f2ee;
+  --color-sand: #ebe7df;
   --color-terra: #c2552d;
   --color-terra-dark: #a84722;
   --color-steel: #5b6b78;
   --color-ink: #1e1e1e;
-  --color-line: #e1ddd5;
-  --color-placeholder: #e9e6e0;
+  --color-line: #dcd7cd;
   --color-stock: #4a7c59;
-  --color-chat: #ece5dd;
-  --font-sans: var(--font-manrope), system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --font-sans: var(--font-golos), system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: var(--font-geologica), var(--font-golos), system-ui, sans-serif;
+
+  --shadow-soft: 0 14px 34px -14px rgb(30 30 30 / 0.28), 0 2px 6px -2px rgb(30 30 30 / 0.08);
+  --shadow-lift: 0 22px 44px -16px rgb(30 30 30 / 0.34), 0 3px 8px -3px rgb(30 30 30 / 0.1);
+  --shadow-terra: 0 14px 30px -12px rgb(194 85 45 / 0.65), 0 2px 6px -2px rgb(194 85 45 / 0.3);
 }
 
 html {
   /* Крупный текст на телефоне */
   font-size: 17px;
-  scroll-behavior: auto;
   -webkit-text-size-adjust: 100%;
-}
-
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
 }
 
 body {
@@ -32,6 +31,70 @@ body {
   color: var(--color-ink);
 }
 
+/* Крупные заголовки: плотные, межстрочный 86%, трекинг в минус, строки стремятся к прямоугольнику */
+.display {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-variation-settings: "SHRP" 50;
+  line-height: 0.86;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-variation-settings: "SHRP" 35;
+  line-height: 0.92;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+
 summary::-webkit-details-marker {
   display: none;
+}
+
+/* ---------- Движение: мягкое появление и параллакс ---------- */
+/* Класс .motion ставится до отрисовки, только если человек не просил убрать анимацию */
+
+.motion [data-reveal] {
+  opacity: 0;
+  transform: translate3d(0, 26px, 0);
+  transition:
+    opacity 0.9s cubic-bezier(0.2, 0.7, 0.2, 1),
+    transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transition-delay: var(--d, 0ms);
+}
+
+.motion [data-reveal].is-in {
+  opacity: 1;
+  transform: none;
+}
+
+[data-parallax] {
+  transform: scale(1.12);
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .motion [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  [data-parallax] {
+    transform: none !important;
+  }
+}
+
+/* Плавная прокрутка (Lenis) */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis:not(.lenis-autoToggle).lenis-stopped {
+  overflow: clip;
+}
+.lenis [data-lenis-prevent] {
+  overscroll-behavior: contain;
 }

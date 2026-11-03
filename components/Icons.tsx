@@ -1,4 +1,3 @@
-import type { IconKey } from "@/lib/catalog";
 import type { SVGProps } from "react";
 
 type P = SVGProps<SVGSVGElement>;
@@ -108,100 +107,10 @@ export function EyeIcon(p: P) {
   );
 }
 
-// Нейтральная графика направлений — вместо стоковых фото
-export function CategoryIcon({ icon, ...p }: { icon: IconKey } & P) {
-  const props = { viewBox: "0 0 64 64", ...base, strokeWidth: 2, ...p };
-  switch (icon) {
-    case "cement":
-      return (
-        <svg {...props}>
-          <path d="M16 18c0-3 3-5 6-5h20c3 0 6 2 6 5l3 34c0 2-1.5 3-3 3H16c-1.5 0-3-1-3-3l3-34Z" />
-          <path d="M18 13l2-5h24l2 5" />
-          <path d="M22 30h20M22 37h20M26 44h12" />
-        </svg>
-      );
-    case "rebar":
-      return (
-        <svg {...props}>
-          {[16, 26, 36, 46].map((y) => (
-            <g key={y}>
-              <path d={`M6 ${y}h52`} />
-              {[12, 20, 28, 36, 44, 52].map((x) => (
-                <path key={x} d={`M${x} ${y - 3}l3 6`} />
-              ))}
-            </g>
-          ))}
-        </svg>
-      );
-    case "mesh":
-      return (
-        <svg {...props}>
-          <rect x="8" y="10" width="48" height="44" />
-          <path d="M20 10v44M32 10v44M44 10v44M8 21h48M8 32h48M8 43h48" />
-        </svg>
-      );
-    case "sheet":
-      return (
-        <svg {...props}>
-          <path d="M6 24l6-6 6 6 6-6 6 6 6-6 6 6 6-6 6 6v22l-6-6-6 6-6-6-6 6-6-6-6 6-6-6-6 6Z" />
-        </svg>
-      );
-    case "insulation":
-      return (
-        <svg {...props}>
-          <rect x="8" y="12" width="48" height="12" rx="1" />
-          <rect x="8" y="26" width="48" height="12" rx="1" />
-          <rect x="8" y="40" width="48" height="12" rx="1" />
-          <path d="M14 18h8M30 32h8M44 46h6" />
-        </svg>
-      );
-    case "window":
-      return (
-        <svg {...props}>
-          <rect x="12" y="8" width="40" height="44" />
-          <path d="M32 8v44M12 30h40" />
-          <path d="M8 52h48v4H8z" />
-          <path d="M28 20v6M36 20v6" />
-        </svg>
-      );
-    case "door":
-      return (
-        <svg {...props}>
-          <rect x="18" y="6" width="28" height="52" />
-          <path d="M22 10h20v20H22zM22 34h20v20H22z" />
-          <circle cx="41" cy="32" r="1.5" />
-        </svg>
-      );
-    case "tire":
-      return (
-        <svg {...props}>
-          <circle cx="32" cy="32" r="24" />
-          <circle cx="32" cy="32" r="12" />
-          {Array.from({ length: 12 }).map((_, i) => {
-            const a = (i * Math.PI) / 6;
-            const x1 = 32 + Math.cos(a) * 16;
-            const y1 = 32 + Math.sin(a) * 16;
-            const x2 = 32 + Math.cos(a) * 22;
-            const y2 = 32 + Math.sin(a) * 22;
-            return <path key={i} d={`M${x1.toFixed(1)} ${y1.toFixed(1)}L${x2.toFixed(1)} ${y2.toFixed(1)}`} />;
-          })}
-        </svg>
-      );
-    case "rim":
-      return (
-        <svg {...props}>
-          <circle cx="32" cy="32" r="24" />
-          <circle cx="32" cy="32" r="20" />
-          <circle cx="32" cy="32" r="5" />
-          {Array.from({ length: 5 }).map((_, i) => {
-            const a = (i * 2 * Math.PI) / 5 - Math.PI / 2;
-            const x1 = 32 + Math.cos(a) * 7;
-            const y1 = 32 + Math.sin(a) * 7;
-            const x2 = 32 + Math.cos(a) * 19;
-            const y2 = 32 + Math.sin(a) * 19;
-            return <path key={i} d={`M${x1.toFixed(1)} ${y1.toFixed(1)}L${x2.toFixed(1)} ${y2.toFixed(1)}`} />;
-          })}
-        </svg>
-      );
-  }
+export function PlusIcon(p: P) {
+  return (
+    <svg viewBox="0 0 24 24" {...base} {...p}>
+      <path d="M12 5v14M5 12h14" />
+    </svg>
+  );
 }

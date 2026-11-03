@@ -1,49 +1,50 @@
-import Image from "next/image";
 import ilgam from "@/public/img/ilgam.jpg";
-import SearchBox from "@/components/SearchBox";
-import { About, Contacts, Directions, Faq, HowToOrder, HubBlocks, Reviews, WhyMe } from "@/components/sections";
-import { CallButton, WhatsAppButton } from "@/components/ui";
+import { About, Contacts, Directions, Faq, HowToOrder, HubSplit, Reviews, WhyMe } from "@/components/sections";
+import { CallButton, ParallaxImage, WhatsAppButton } from "@/components/ui";
 
 export default function Home() {
   return (
     <>
-      {/* Первый экран */}
-      <section className="border-b border-line">
-        <div className="mx-auto grid max-w-6xl items-center gap-8 px-4 pt-8 pb-10 md:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] md:pt-14 md:pb-14">
-          <div>
-            <h1 className="text-[1.75rem] leading-tight font-extrabold text-graphite md:text-5xl md:leading-[1.1]">
-              Ильгам Кильдияров — стройматериалы, окна и колёса в Северо-восточном регионе РБ
-            </h1>
-            <p className="mt-4 max-w-xl text-lg text-ink/85 md:text-xl">
-              Всё для стройки и колёса на любую технику — в одном месте, с доставкой до вашего объекта.
-            </p>
-            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-              <CallButton />
-              <WhatsAppButton />
-            </div>
-            <SearchBox className="mt-6 max-w-xl" />
-          </div>
-          <div className="relative mx-auto aspect-[4/3] w-full overflow-hidden rounded-lg bg-line md:aspect-[6/7]">
-            <Image
+      {/* Первый экран: одна крупная сцена */}
+      <section className="relative overflow-hidden bg-graphite text-white">
+        <div className="grid lg:min-h-[calc(100svh-4.5rem)] lg:grid-cols-12">
+          <div className="relative h-[58svh] min-h-[360px] lg:order-last lg:col-span-5 lg:h-auto">
+            <ParallaxImage
               src={ilgam}
               alt="Ильгам Кильдияров"
-              fill
+              speed={0.08}
               preload
-              placeholder="blur"
-              sizes="(min-width: 768px) 40vw, 90vw"
-              className="object-cover object-top"
+              sizes="(min-width: 1024px) 42vw, 100vw"
+              className="h-full w-full"
+              imgClassName="object-cover object-[50%_18%]"
             />
+            <div className="absolute inset-0 bg-linear-to-t from-graphite via-graphite/10 to-transparent lg:bg-linear-to-r lg:via-transparent" />
+          </div>
+
+          <div className="relative z-10 -mt-28 flex flex-col justify-end px-5 pb-16 sm:px-8 lg:col-span-7 lg:mt-0 lg:justify-center lg:py-20 lg:pr-10 lg:pl-[max(3rem,calc((100vw-1360px)/2+3rem))]">
+            <h1>
+              <span className="mb-7 block text-base font-medium text-white/60">
+                Ильгам Кильдияров / стройматериалы, окна и колёса
+              </span>
+              <span className="display block text-[10.6vw] lg:text-[min(6.2vw,7.4rem)]">
+                <span className="block">Строить проще,</span>
+                <span className="block">когда знаешь,</span>
+                <span className="block">кому звонить</span>
+              </span>
+            </h1>
+            <p className="mt-8 max-w-[34rem] text-lg text-white/75 md:text-xl">
+              Цемент, арматура, сетка, профнастил, утеплители, окна, шины и диски. Один склад в Салаватском районе и
+              доставка по всему северо-востоку Башкортостана.
+            </p>
+            <div className="mt-10 flex flex-col gap-3 sm:flex-row">
+              <CallButton />
+              <WhatsAppButton tone="dark" />
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Два хаба */}
-      <section className="py-10 md:py-14" aria-label="Разделы">
-        <div className="mx-auto max-w-6xl px-4">
-          <HubBlocks />
-        </div>
-      </section>
-
+      <HubSplit />
       <Directions />
       <WhyMe />
       <About />

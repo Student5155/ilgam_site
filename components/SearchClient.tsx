@@ -5,8 +5,8 @@ import { useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
 import { search } from "@/lib/search";
 import { waLink } from "@/lib/site";
-import { ArrowIcon, CategoryIcon, SearchIcon } from "./Icons";
-import { CallButton, StatusBadge } from "./ui";
+import { ArrowIcon, SearchIcon } from "./Icons";
+import { BTN, CallButton, StatusBadge } from "./ui";
 
 const EXAMPLES = ["цемент", "арматура 12", "сетка", "пеноплекс", "профнастил", "подоконник", "шины на трактор", "диски R15"];
 
@@ -27,25 +27,25 @@ export default function SearchClient() {
     <div>
       <form role="search" onSubmit={(e) => e.preventDefault()} className="relative">
         <label className="sr-only" htmlFor="q">Что ищете?</label>
-        <SearchIcon className="pointer-events-none absolute top-1/2 left-4 size-6 -translate-y-1/2 text-steel" />
+        <SearchIcon className="pointer-events-none absolute top-1/2 left-5 size-6 -translate-y-1/2 text-steel" />
         <input
           id="q"
           type="search"
           value={q}
           onChange={(e) => update(e.target.value)}
           autoFocus
-          placeholder="Цемент, арматура 12, шины R16…"
-          className="h-14 w-full rounded-md border border-line bg-white pr-4 pl-13 text-lg text-ink placeholder:text-steel/80 focus:border-steel focus:outline-none"
+          placeholder="Цемент, арматура 12, шины R16"
+          className="h-16 w-full rounded-2xl bg-white pr-5 pl-14 text-xl text-ink shadow-soft placeholder:text-steel/80 focus:shadow-lift focus:outline-none"
         />
       </form>
 
-      <div className="mt-4 flex flex-wrap gap-2">
+      <div className="mt-5 flex flex-wrap gap-2.5">
         {EXAMPLES.map((ex) => (
           <button
             key={ex}
             type="button"
             onClick={() => update(ex)}
-            className="rounded-full border border-line bg-white px-3 py-1.5 text-sm text-graphite hover:border-steel"
+            className="rounded-full bg-white px-4 py-2 text-sm text-graphite shadow-[0_4px_14px_-8px_rgb(30_30_30/0.35)] transition-[transform,box-shadow] duration-300 hover:-translate-y-0.5 hover:shadow-soft"
           >
             {ex}
           </button>
@@ -53,18 +53,12 @@ export default function SearchClient() {
       </div>
 
       {q.trim() && hits.length === 0 && (
-        <div className="mt-10 rounded-lg border border-line bg-white p-6">
-          <p className="text-lg text-ink">
-            По запросу «{q}» на сайте ничего нет. Это не значит, что у меня этого нет — позвоните, подскажу.
-          </p>
-          <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+        <div className="mt-14">
+          <p className="title text-3xl text-graphite">По запросу «{q}» на сайте ничего нет.</p>
+          <p className="mt-3 text-lg text-ink/75">Это не значит, что у меня этого нет. Позвоните, подскажу.</p>
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <CallButton />
-            <a
-              href={waLink(`Здравствуйте, Ильгам! Есть ли у вас: ${q}?`)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex min-h-12 items-center justify-center rounded-md border-2 border-terra px-5 font-semibold text-terra hover:bg-terra hover:text-white"
-            >
+            <a href={waLink(`Здравствуйте, Ильгам! Есть ли у вас: ${q}?`)} target="_blank" rel="noopener noreferrer" className={BTN.light}>
               Спросить в WhatsApp
             </a>
           </div>
@@ -72,21 +66,21 @@ export default function SearchClient() {
       )}
 
       {categories.length > 0 && (
-        <section className="mt-10">
-          <h2 className="text-xl font-bold text-graphite">Направления</h2>
-          <ul className="mt-4 grid gap-3 sm:grid-cols-2">
+        <section className="mt-14">
+          <h2 className="text-sm font-medium text-steel">Направления</h2>
+          <ul className="mt-3 divide-y divide-line border-y border-line">
             {categories.map(({ category: c }) => (
               <li key={c.slug}>
-                <Link
-                  href={`/${c.slug}`}
-                  className="flex items-center gap-4 rounded-lg border border-line bg-white p-4 hover:border-steel"
-                >
-                  <CategoryIcon icon={c.icon} className="size-10 shrink-0 text-steel" />
+                <Link href={`/${c.slug}`} className="group flex items-center gap-5 py-5">
                   <span className="flex-1">
-                    <span className="block font-bold text-graphite">{c.title}</span>
-                    <span className="block text-sm text-steel">{c.hub === "avto" ? "АВТО" : "СТРОЙКА"} · {c.short}</span>
+                    <span className="title block text-2xl text-graphite md:text-3xl">{c.title}</span>
+                    <span className="mt-1 flex flex-wrap gap-x-3 text-base text-steel">
+                      <span>{c.hub === "avto" ? "АВТО" : "СТРОЙКА"}</span>
+                      <span aria-hidden>/</span>
+                      <span>{c.short}</span>
+                    </span>
                   </span>
-                  <ArrowIcon className="size-5 text-steel" />
+                  <ArrowIcon className="size-6 text-steel transition-transform duration-300 group-hover:translate-x-1 group-hover:text-graphite" />
                 </Link>
               </li>
             ))}
@@ -95,19 +89,23 @@ export default function SearchClient() {
       )}
 
       {items.length > 0 && (
-        <section className="mt-10">
-          <h2 className="text-xl font-bold text-graphite">Товары</h2>
-          <ul className="mt-4 divide-y divide-line overflow-hidden rounded-lg border border-line bg-white">
+        <section className="mt-14">
+          <h2 className="text-sm font-medium text-steel">Товары</h2>
+          <ul className="mt-3 divide-y divide-line border-y border-line">
             {items.map((h, i) =>
               h.type === "item" ? (
                 <li key={`${h.category.slug}-${i}`}>
-                  <Link href={`/${h.category.slug}#assortiment`} className="block p-4 hover:bg-paper">
-                    <span className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-                      <span className="font-semibold text-graphite">{h.item.name}</span>
-                      <span className="font-semibold whitespace-nowrap text-ink">{h.item.price}</span>
+                  <Link href={`/${h.category.slug}#assortiment`} className="block py-5 transition-colors duration-200 hover:bg-white/60">
+                    <span className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
+                      <span className="text-lg font-semibold text-graphite">{h.item.name}</span>
+                      <span className="title text-xl whitespace-nowrap text-ink">{h.item.price}</span>
                     </span>
-                    <span className="mt-1 block text-sm text-steel">{h.category.title} · {h.item.spec}</span>
-                    <StatusBadge status={h.status} className="mt-2 text-xs" />
+                    <span className="mt-1 flex flex-wrap gap-x-3 text-sm text-steel">
+                      <span>{h.category.title}</span>
+                      <span aria-hidden>/</span>
+                      <span>{h.item.spec}</span>
+                    </span>
+                    <StatusBadge status={h.status} className="mt-3 text-xs" />
                   </Link>
                 </li>
               ) : null,

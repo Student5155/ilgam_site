@@ -1,20 +1,29 @@
 import type { Metadata, Viewport } from "next";
-import { Manrope } from "next/font/google";
+import { Geologica, Golos_Text } from "next/font/google";
 import Footer from "@/components/Footer";
 import FloatingCall from "@/components/FloatingCall";
 import Header from "@/components/Header";
+import Motion from "@/components/Motion";
 import { SITE } from "@/lib/site";
 import "./globals.css";
 
-const manrope = Manrope({
-  variable: "--font-manrope",
+// Заголовки: Geologica с острыми срезами. Текст: Golos Text, спокойный и очень читаемый.
+const geologica = Geologica({
+  variable: "--font-geologica",
+  subsets: ["latin", "cyrillic"],
+  axes: ["SHRP"],
+  display: "swap",
+});
+
+const golos = Golos_Text({
+  variable: "--font-golos",
   subsets: ["latin", "cyrillic"],
   display: "swap",
 });
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
-  title: "Ильгам Кильдияров — стройматериалы, окна и колёса | Салаватский район, РБ",
+  title: "Ильгам Кильдияров | Стройматериалы, окна и колёса. Салаватский район, РБ",
   description:
     "Цемент, арматура, кладочная сетка, профнастил, утеплители, пластиковые окна, шины и диски с доставкой по Салаватскому району и северо-востоку Башкортостана. Ильгам Кильдияров, +7 965 929-53-69.",
   openGraph: {
@@ -43,7 +52,7 @@ const localBusiness = {
     addressCountry: "RU",
     addressRegion: "Республика Башкортостан",
     addressLocality: "Салаватский район",
-    // streetAddress: "[улица, дом склада]" — добавить, когда будет точный адрес
+    // streetAddress: "[улица, дом склада]": добавить, когда будет точный адрес
   },
   geo: { "@type": "GeoCoordinates", latitude: SITE.coords.lat, longitude: SITE.coords.lon },
   openingHoursSpecification: [
@@ -57,10 +66,14 @@ const localBusiness = {
   areaServed: "Северо-восток Республики Башкортостан",
 };
 
+// Включаем анимации до первой отрисовки, чтобы блоки не мигали
+const motionScript = `if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){document.documentElement.classList.add('motion')}`;
+
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="ru" className={`${manrope.variable} h-full antialiased`}>
+    <html lang="ru" className={`${geologica.variable} ${golos.variable} h-full antialiased`} suppressHydrationWarning>
       <body className="flex min-h-full flex-col font-sans">
+        <script dangerouslySetInnerHTML={{ __html: motionScript }} />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusiness).replace(/</g, "\\u003c") }}
@@ -69,6 +82,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <main className="flex-1">{children}</main>
         <Footer />
         <FloatingCall />
+        <Motion />
       </body>
     </html>
   );

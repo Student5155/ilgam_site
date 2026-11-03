@@ -1,154 +1,208 @@
 import Image from "next/image";
 import Link from "next/link";
+import type { CSSProperties } from "react";
 import ilgam from "@/public/img/ilgam.jpg";
-import { categoriesByGroup, categoriesByHub, HUBS, type GroupName, type HubKey } from "@/lib/catalog";
+import { categoriesByGroup, categoriesByHub, HUBS, type Category, type GroupName, type HubKey } from "@/lib/catalog";
 import { SITE, telLink, yandexMapSrc } from "@/lib/site";
-import {
-  ArrowIcon,
-  CalendarIcon,
-  CategoryIcon,
-  ClockIcon,
-  EyeIcon,
-  PhoneIcon,
-  PinIcon,
-  TelegramIcon,
-  TruckIcon,
-  WarehouseIcon,
-  WhatsAppIcon,
-} from "./Icons";
-import { CallButton, CategoryCard, Section, WhatsAppButton } from "./ui";
+import { ArrowIcon, ClockIcon, PhoneIcon, PinIcon, PlusIcon, TelegramIcon, WhatsAppIcon } from "./Icons";
+import SearchBox from "./SearchBox";
+import { BTN, CallButton, Kicker, ParallaxImage, StatusBadge, TypeTile, WhatsAppButton, WRAP } from "./ui";
 
-/* ---------- Два хаба: СТРОЙКА и АВТО ---------- */
+const delay = (ms: number) => ({ "--d": `${ms}ms` }) as CSSProperties;
 
-export function HubBlocks() {
+/* ---------- 1. Два хаба на всю ширину: СТРОЙКА и АВТО ---------- */
+
+export function HubSplit() {
   return (
-    <div className="grid gap-4 md:grid-cols-2">
-      {(["stroyka", "avto"] as HubKey[]).map((key) => {
+    <section aria-label="Разделы" className="grid md:grid-cols-2">
+      {(["stroyka", "avto"] as HubKey[]).map((key, i) => {
         const hub = HUBS[key];
-        const cats = categoriesByHub(key);
+        const dark = key === "avto";
         return (
-          <div key={key} className="flex flex-col rounded-lg border border-line border-t-4 border-t-graphite bg-white p-5 md:p-7">
-            <Link href={`/${key}`} className="group">
-              <p className="text-sm font-medium text-steel">{SITE.name} |</p>
-              <h2 className="mt-1 flex items-center gap-3 text-3xl font-extrabold tracking-wide text-graphite md:text-4xl">
-                {hub.label}
-                <ArrowIcon className="size-7 text-steel group-hover:text-graphite" />
-              </h2>
-            </Link>
-            <p className="mt-2 text-base text-ink/80">{hub.text}</p>
-            <ul className="mt-5 flex flex-wrap gap-2">
-              {cats.map((c) => (
-                <li key={c.slug}>
-                  <Link
-                    href={`/${c.slug}`}
-                    className="inline-flex items-center gap-2 rounded-md border border-line bg-paper px-3 py-2 text-base font-medium text-graphite hover:border-steel"
-                  >
-                    <CategoryIcon icon={c.icon} className="size-5 text-steel" />
-                    {c.title}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+          <div
+            key={key}
+            className={`${dark ? "bg-graphite-2 text-white" : "bg-sand text-graphite"} min-w-0 px-5 py-20 sm:px-8 md:py-28 lg:px-12`}
+          >
+            <div data-reveal style={delay(i * 120)} className={`max-w-[600px] ${i === 0 ? "md:ml-auto md:pr-6" : "md:pl-6"}`}>
+              <Kicker className={dark ? "text-white/55" : ""}>{SITE.name} |</Kicker>
+              <Link href={`/${key}`} className="group mt-3 flex items-end gap-4">
+                <span className="display text-[15vw] md:text-[7vw] xl:text-[6.4rem]">{hub.label}</span>
+                <ArrowIcon className="mb-[0.4em] size-9 shrink-0 opacity-50 transition-[transform,opacity] duration-300 group-hover:translate-x-1.5 group-hover:opacity-100" />
+              </Link>
+              <p className={`mt-6 max-w-md text-lg ${dark ? "text-white/70" : "text-ink/75"}`}>{hub.text}</p>
+              <ul className="mt-9 flex flex-wrap gap-2.5">
+                {categoriesByHub(key).map((c) => (
+                  <li key={c.slug}>
+                    <Link
+                      href={`/${c.slug}`}
+                      className={`inline-flex rounded-full px-4.5 py-2.5 text-base font-medium transition-[transform,box-shadow,background-color] duration-300 hover:-translate-y-0.5 ${
+                        dark
+                          ? "bg-white/10 text-white hover:bg-white/16"
+                          : "bg-white text-graphite shadow-soft hover:shadow-lift"
+                      }`}
+                    >
+                      {c.title}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         );
       })}
-    </div>
+    </section>
   );
 }
 
-/* ---------- Направления по группам ---------- */
+/* ---------- 2. Направления: индекс строками ---------- */
 
-export function GroupGrid({ group }: { group: GroupName }) {
+function DirectionRow({ c }: { c: Category }) {
+  const photo = c.photos?.[0];
   return (
-    <div className="mt-10 first:mt-0">
-      <h3 className="border-b border-line pb-3 text-xl font-bold text-graphite">{group}</h3>
-      <div className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        {categoriesByGroup(group).map((c) => (
-          <CategoryCard key={c.slug} category={c} />
-        ))}
+    <Link
+      href={`/${c.slug}`}
+      className="group grid grid-cols-[1fr_auto] items-center gap-5 py-7 md:grid-cols-[170px_1fr_auto] md:gap-9"
+    >
+      <div className="relative hidden aspect-[4/3] overflow-hidden rounded-xl shadow-soft md:block">
+        {photo ? (
+          <Image
+            src={photo.src}
+            alt={photo.alt}
+            fill
+            placeholder="blur"
+            sizes="170px"
+            className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]"
+          />
+        ) : (
+          <TypeTile category={c} showNote={false} className="h-full" />
+        )}
       </div>
+      <div>
+        <div className="flex flex-col items-start gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-5">
+          <span className="title text-[2rem] text-graphite md:text-[2.6rem]">{c.title}</span>
+          <StatusBadge status={c.status} className="text-xs" />
+        </div>
+        <p className="mt-3 text-base text-ink/70 md:text-lg">{c.short}</p>
+      </div>
+      <span className="flex size-12 items-center justify-center rounded-full bg-white text-graphite shadow-soft transition-[background-color,color,transform] duration-300 group-hover:translate-x-1 group-hover:bg-graphite group-hover:text-white">
+        <ArrowIcon className="size-5" />
+      </span>
+    </Link>
+  );
+}
+
+export function DirectionIndex({ groups }: { groups: GroupName[] }) {
+  return (
+    <div className="space-y-20">
+      {groups.map((g, gi) => (
+        <div key={g} className="grid gap-4 lg:grid-cols-12 lg:gap-12">
+          <div className="lg:col-span-3">
+            <div className="lg:sticky lg:top-28">
+              <p className="text-sm text-steel">{String(gi + 1).padStart(2, "0")}</p>
+              <h3 className="title mt-2 text-3xl text-graphite">{g}</h3>
+            </div>
+          </div>
+          <ul className="divide-y divide-line border-y border-line lg:col-span-9">
+            {categoriesByGroup(g).map((c) => (
+              <li key={c.slug} data-reveal>
+                <DirectionRow c={c} />
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
     </div>
   );
 }
 
 export function Directions() {
   return (
-    <Section id="napravleniya" title="Направления" lead="Стройка и авто — отдельно. Выберите, что нужно.">
-      <GroupGrid group="Стройматериалы" />
-      <GroupGrid group="Окна и двери" />
-      <GroupGrid group="Колёса и диски" />
-    </Section>
+    <section id="napravleniya" className="scroll-mt-20 py-24 md:py-36">
+      <div className={WRAP}>
+        <div className="grid gap-10 lg:grid-cols-12 lg:items-end">
+          <h2 data-reveal className="display min-w-0 text-[11.5vw] text-graphite sm:text-[clamp(3.2rem,8vw,6.5rem)] lg:col-span-7">
+            Направления
+          </h2>
+          <div data-reveal style={delay(120)} className="lg:col-span-5">
+            <p className="text-lg text-ink/75">Стройка и авто отдельно. Найдите нужное по названию или выберите ниже.</p>
+            <SearchBox className="mt-5" />
+          </div>
+        </div>
+        <div className="mt-20 md:mt-28">
+          <DirectionIndex groups={["Стройматериалы", "Окна и двери", "Колёса и диски"]} />
+        </div>
+      </div>
+    </section>
   );
 }
 
-/* ---------- Почему ко мне ---------- */
+/* ---------- 3. Почему ко мне: тёмная полоса, крупная типографика без иконок ---------- */
 
 const FACTS = [
-  { icon: CalendarIcon, title: "[15] лет на рынке", text: "Работаю в регионе с [____] года." },
-  { icon: WarehouseIcon, title: "Свой склад", text: "[Населённый пункт, адрес склада]. Товар лежит под крышей." },
-  { icon: TruckIcon, title: "Доставка по северо-востоку РБ", text: "Салаватский район и соседние районы республики." },
-  { icon: EyeIcon, title: "Можно приехать и посмотреть", text: "Каждый день с 9:00 до 18:00. Позвоните, что едете." },
+  { title: "[15] лет на рынке", text: "Работаю в регионе с [____] года." },
+  { title: "Свой склад", text: "[Населённый пункт, адрес склада]. Товар лежит под крышей." },
+  { title: "Доставка по северо-востоку РБ", text: "Салаватский район и соседние районы республики." },
+  { title: "Можно приехать и посмотреть", text: "Каждый день с 9:00 до 18:00. Позвоните, что едете." },
 ];
 
 export function WhyMe() {
   return (
-    <Section title="Почему ко мне" className="bg-white">
-      <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {FACTS.map(({ icon: Icon, title, text }) => (
-          <li key={title} className="border-l-2 border-steel/40 pl-5">
-            <Icon className="size-8 text-steel" />
-            <p className="mt-3 text-lg font-bold text-graphite">{title}</p>
-            <p className="mt-1 text-base text-ink/80">{text}</p>
-          </li>
-        ))}
-      </ul>
-    </Section>
+    <section className="bg-graphite py-24 text-white md:py-36">
+      <div className={`${WRAP} grid gap-14 lg:grid-cols-12`}>
+        <h2 data-reveal className="display text-[clamp(3rem,7vw,5.8rem)] lg:col-span-4">
+          Почему ко&nbsp;мне
+        </h2>
+        <ol className="grid gap-x-14 gap-y-12 sm:grid-cols-2 lg:col-span-8">
+          {FACTS.map((f, i) => (
+            <li key={f.title} data-reveal style={delay(i * 90)} className="border-t border-white/15 pt-6">
+              <p className="text-sm text-white/45">{String(i + 1).padStart(2, "0")}</p>
+              <p className="title mt-4 text-[1.75rem] md:text-[2.1rem]">{f.title}</p>
+              <p className="mt-3 text-lg text-white/65">{f.text}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
   );
 }
 
-/* ---------- Об Ильгаме ---------- */
+/* ---------- 4. Об Ильгаме ---------- */
 
 export function About() {
   return (
-    <Section id="ob-ilgame" title="Об Ильгаме">
-      <div className="grid items-start gap-8 md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
-        <div className="relative aspect-[6/7] overflow-hidden rounded-lg bg-line">
-          <Image
+    <section id="ob-ilgame" className="scroll-mt-20 py-24 md:py-36">
+      <div className={`${WRAP} grid items-center gap-12 lg:grid-cols-12 lg:gap-16`}>
+        <div data-reveal className="lg:col-span-5">
+          <ParallaxImage
             src={ilgam}
             alt="Ильгам Кильдияров"
-            fill
-            placeholder="blur"
-            sizes="(min-width: 768px) 40vw, 100vw"
-            className="object-cover object-top"
+            speed={0.1}
+            sizes="(min-width: 1024px) 40vw, 100vw"
+            className="aspect-[4/5] rounded-2xl shadow-soft"
+            imgClassName="object-cover object-top"
           />
         </div>
-        <div>
-          <div className="space-y-4 text-lg leading-relaxed text-ink">
-            <p>
-              Меня зовут Ильгам Кильдияров. Я местный и много лет вожу стройматериалы и колёса по нашему району.
-            </p>
-            <p>
-              На звонки отвечаю сам. Если что-то пошло не так — звоните мне напрямую, разберёмся в тот же день.
-            </p>
-            <p>
-              Не обещаю того, чего не могу. Если товара нет или не успеваю привезти — скажу сразу, как есть.
-            </p>
+        <div data-reveal style={delay(120)} className="lg:col-span-6 lg:col-start-7">
+          <Kicker>Об Ильгаме</Kicker>
+          <p className="title mt-5 text-[2.1rem] text-graphite md:text-[3.2rem]">
+            На звонки отвечаю сам. Если что-то не так, разбираюсь в тот же день.
+          </p>
+          <div className="mt-8 space-y-4 text-lg leading-relaxed text-ink/85">
+            <p>Меня зовут Ильгам Кильдияров. Я местный и много лет вожу стройматериалы и колёса по нашему району.</p>
+            <p>Не обещаю того, чего не могу. Если товара нет или не успеваю привезти, скажу сразу, как есть.</p>
             <p>Мне важно, чтобы вы пришли ко мне ещё раз и посоветовали меня соседу.</p>
           </div>
           <p className="mt-4 text-sm text-steel">[Текст-пример. Заменить на слова Ильгама.]</p>
-          <Link
-            href="/pravila"
-            className="mt-6 inline-flex items-center gap-2 font-semibold text-graphite underline-offset-4 hover:underline"
-          >
-            Мои правила работы <ArrowIcon className="size-4" />
+          <Link href="/pravila" className={`${BTN.light} mt-9`}>
+            Мои правила работы <ArrowIcon className="size-5" />
           </Link>
         </div>
       </div>
-    </Section>
+    </section>
   );
 }
 
-/* ---------- Как заказать ---------- */
+/* ---------- 5. Как заказать: три шага на песочной полосе ---------- */
 
 const STEPS = [
   { title: "Звоните или пишите", text: "По телефону, в WhatsApp или Telegram. Скажите, что нужно и куда." },
@@ -156,87 +210,83 @@ const STEPS = [
   { title: "Доставка или самовывоз", text: "Привожу на объект или забираете со склада сами." },
 ];
 
-export function HowToOrder({ className = "bg-white" }: { className?: string }) {
+export function HowToOrder() {
   return (
-    <Section id="kak-zakazat" title="Как заказать" className={className}>
-      <ol className="grid gap-6 md:grid-cols-3">
-        {STEPS.map((s, i) => (
-          <li key={s.title} className="flex gap-4">
-            <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-graphite text-lg font-bold text-white">
-              {i + 1}
-            </span>
-            <div>
-              <p className="text-lg font-bold text-graphite">{s.title}</p>
-              <p className="mt-1 text-base text-ink/80">{s.text}</p>
-            </div>
-          </li>
-        ))}
-      </ol>
-    </Section>
+    <section id="kak-zakazat" className="scroll-mt-20 bg-sand py-24 md:py-32">
+      <div className={WRAP}>
+        <h2 data-reveal className="display text-[clamp(2.8rem,6.5vw,5.2rem)] text-graphite">
+          Как заказать
+        </h2>
+        <ol className="mt-14 grid gap-12 md:mt-20 md:grid-cols-3 md:gap-10">
+          {STEPS.map((s, i) => (
+            <li key={s.title} data-reveal style={delay(i * 120)} className="relative">
+              <span aria-hidden className="display block text-[7rem] text-graphite/12 md:text-[9rem]">
+                {i + 1}
+              </span>
+              <p className="title -mt-6 text-[1.7rem] text-graphite md:-mt-8 md:text-3xl">{s.title}</p>
+              <p className="mt-3 max-w-xs text-lg text-ink/75">{s.text}</p>
+            </li>
+          ))}
+        </ol>
+        <div data-reveal className="mt-16 flex flex-col gap-3 sm:flex-row">
+          <CallButton />
+          <WhatsAppButton />
+        </div>
+      </div>
+    </section>
   );
 }
 
-/* ---------- Отзывы (макеты скриншотов WhatsApp) ---------- */
-
-const REVIEWS = [
-  { who: "[Имя], прораб", place: "[населённый пункт]", text: "Ильгам, арматуру приняли, всё ровно. Завтра ещё 10 тонн надо" },
-  { who: "[Имя]", place: "[населённый пункт]", text: "Цемент привезли к восьми, как договаривались. Мешки сухие, спасибо" },
-  { who: "[Имя], частный дом", place: "[населённый пункт]", text: "Профнастил по размерам подошёл, ничего подрезать не пришлось" },
-  { who: "[Имя], фермер", place: "[населённый пункт]", text: "Диски на погрузчик встали ровно, без биения. Следующие тоже у вас возьму" },
-  { who: "[Имя]", place: "[населённый пункт]", text: "Окна поставили, откосы аккуратные. Соседу ваш номер дал" },
-];
+/* ---------- 6. Отзывы: места под настоящие скриншоты ---------- */
 
 export function Reviews() {
   return (
-    <Section
-      id="otzyvy"
-      title="Отзывы"
-      lead="[Здесь будут скриншоты настоящих переписок с клиентами. Ниже — примеры, как это будет выглядеть.]"
-    >
-      <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {REVIEWS.map((r) => (
-          <li key={r.text} className="overflow-hidden rounded-lg border border-line bg-white">
-            <div className="flex items-center gap-3 bg-graphite px-4 py-3 text-white">
-              <span className="flex size-9 items-center justify-center rounded-full bg-white/15 text-sm">
-                <WhatsAppIcon className="size-4" />
-              </span>
-              <span>
-                <span className="block text-sm font-semibold">{r.who}</span>
-                <span className="block text-xs text-white/70">{r.place}</span>
-              </span>
-            </div>
-            <div className="bg-chat p-4">
-              <p className="max-w-[90%] rounded-lg rounded-tl-none bg-white px-3 py-2 text-base text-ink shadow-sm">
-                {r.text}
-                <span className="mt-1 block text-right text-xs text-steel">[дата]</span>
-              </p>
-            </div>
-            <p className="px-4 py-2 text-xs text-steel">Пример отзыва — заменить на скриншот</p>
-          </li>
-        ))}
-      </ul>
-    </Section>
+    <section id="otzyvy" className="scroll-mt-20 py-24 md:py-36">
+      <div className={`${WRAP} grid gap-12 lg:grid-cols-12`}>
+        <div data-reveal className="lg:col-span-4">
+          <h2 className="display text-[clamp(2.8rem,6.5vw,5.2rem)] text-graphite">Отзывы</h2>
+          <p className="mt-6 text-lg text-ink/75">
+            Переписки с прорабами и частными заказчиками, как есть, без правок.
+          </p>
+          <p className="mt-4 text-sm text-steel">
+            [Сюда нужны скриншоты настоящих переписок в WhatsApp. Выдуманные отзывы не ставим.]
+          </p>
+        </div>
+        <ul className="grid grid-cols-3 gap-3 md:gap-5 lg:col-span-8">
+          {[1, 2, 3].map((n, i) => (
+            <li
+              key={n}
+              data-reveal
+              style={delay(i * 100)}
+              className="flex aspect-[9/16] items-center justify-center rounded-2xl bg-sand p-3 text-center text-xs leading-snug text-steel md:text-sm"
+            >
+              [Скриншот переписки {n}]
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
   );
 }
 
-/* ---------- Частые вопросы ---------- */
+/* ---------- 7. Частые вопросы ---------- */
 
 const FAQ = [
   {
     q: "Куда возите и сколько стоит доставка?",
-    a: "Вожу по Салаватскому району и всему северо-востоку Башкортостана. Цена зависит от расстояния и объёма — называю её сразу, вместе с ценой товара. Арматуру в небольшом количестве могу привезти легковым прицепом.",
+    a: "Вожу по Салаватскому району и всему северо-востоку Башкортостана. Цена зависит от расстояния и объёма, называю её сразу, вместе с ценой товара. Арматуру в небольшом количестве могу привезти легковым прицепом.",
   },
   {
     q: "Как можно оплатить?",
-    a: "[Наличными, переводом на карту, по счёту — уточнить.] Оплата при получении или по договорённости [уточнить].",
+    a: "[Наличными, переводом на карту, по счёту: уточнить.] Оплата при получении или по договорённости [уточнить].",
   },
   {
     q: "Какой минимальный заказ?",
-    a: "Цемент — оптом от 1 тонны, от фуры считаю цену отдельно. По остальным товарам минимального заказа нет [уточнить] — звоните, даже если нужно немного.",
+    a: "Цемент оптом от 1 тонны, от фуры считаю цену отдельно. По остальным товарам минимального заказа нет [уточнить]. Звоните, даже если нужно немного.",
   },
   {
     q: "Работаете с юрлицами?",
-    a: "[Да / нет — уточнить.] Выставляю счёт, закрывающие документы [уточнить: с НДС или без].",
+    a: "[Да или нет: уточнить.] Выставляю счёт, закрывающие документы [уточнить: с НДС или без].",
   },
   {
     q: "Можно приехать и посмотреть товар?",
@@ -244,39 +294,56 @@ const FAQ = [
   },
   {
     q: "Почему на сайте цены «от»?",
-    a: "Цена зависит от объёма, марки и доставки. Скиньте список — посчитаю точно и назову итог без доплат на месте.",
+    a: "Цена зависит от объёма, марки и доставки. Скиньте список, посчитаю точно и назову итог без доплат на месте.",
   },
 ];
 
 export function Faq() {
   return (
-    <Section id="voprosy" title="Частые вопросы" className="bg-white">
-      <div className="divide-y divide-line rounded-lg border border-line bg-white">
-        {FAQ.map((f) => (
-          <details key={f.q} className="group">
-            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-5 text-lg font-semibold text-graphite">
-              {f.q}
-              <span className="shrink-0 text-2xl leading-none text-steel group-open:rotate-45" aria-hidden>
-                +
-              </span>
-            </summary>
-            <p className="px-5 pb-5 text-base leading-relaxed text-ink/90">{f.a}</p>
-          </details>
-        ))}
+    <section id="voprosy" className="scroll-mt-20 bg-white py-24 md:py-32">
+      <div className={`${WRAP} grid gap-12 lg:grid-cols-12`}>
+        <div className="lg:col-span-4">
+          <div data-reveal className="lg:sticky lg:top-28">
+            <h2 className="display text-[clamp(2.6rem,5.5vw,4.4rem)] text-graphite">Частые вопросы</h2>
+            <p className="mt-6 text-lg text-ink/75">Не нашли ответ? Спросите напрямую.</p>
+            <CallButton className="mt-6" />
+          </div>
+        </div>
+        <div className="border-t border-line lg:col-span-8">
+          {FAQ.map((f) => (
+            <details key={f.q} className="group border-b border-line">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-6 py-6 text-xl font-semibold text-graphite transition-colors duration-200 hover:text-ink md:text-[1.4rem]">
+                {f.q}
+                <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-paper text-steel transition-[transform,background-color,color] duration-300 group-open:rotate-45 group-hover:bg-graphite group-hover:text-white">
+                  <PlusIcon className="size-5" />
+                </span>
+              </summary>
+              <p className="max-w-2xl pb-7 text-lg leading-relaxed text-ink/80">{f.a}</p>
+            </details>
+          ))}
+        </div>
       </div>
-    </Section>
+    </section>
   );
 }
 
-/* ---------- Контакты ---------- */
+/* ---------- 8. Контакты: карта на всю ширину, данные поверх ---------- */
 
 export function Contacts() {
   return (
-    <Section id="kontakty" title="Контакты">
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
-        <div className="rounded-lg border border-line bg-white p-6">
-          <p className="text-xl font-bold text-graphite">{SITE.name}</p>
-          <ul className="mt-5 space-y-4 text-lg">
+    <section id="kontakty" className="relative flex scroll-mt-20 flex-col-reverse lg:block lg:min-h-[44rem]">
+      <div className="h-[60svh] min-h-80 lg:absolute lg:inset-0 lg:h-auto">
+        <iframe
+          src={yandexMapSrc}
+          title="Склад Ильгама Кильдиярова на Яндекс.Карте"
+          loading="lazy"
+          className="h-full w-full border-0"
+        />
+      </div>
+      <div className={`${WRAP} relative py-14 lg:pointer-events-none lg:py-24`}>
+        <div data-reveal className="lg:pointer-events-auto lg:max-w-md lg:rounded-2xl lg:bg-white lg:p-10 lg:shadow-lift">
+          <h2 className="display text-[clamp(2.6rem,5vw,3.8rem)] text-graphite">Контакты</h2>
+          <ul className="mt-8 space-y-5 text-lg">
             <li className="flex gap-3">
               <PhoneIcon className="mt-1 size-5 shrink-0 text-steel" />
               <a href={telLink} className="font-semibold text-ink">{SITE.phoneDisplay}</a>
@@ -295,30 +362,22 @@ export function Contacts() {
             <li className="flex gap-3">
               <WhatsAppIcon className="mt-1 size-5 shrink-0 text-steel" />
               <a href={SITE.whatsapp} target="_blank" rel="noopener noreferrer" className="text-ink underline-offset-4 hover:underline">
-                WhatsApp — {SITE.phoneDisplay}
+                WhatsApp / {SITE.phoneDisplay}
               </a>
             </li>
             <li className="flex gap-3">
               <TelegramIcon className="mt-1 size-5 shrink-0 text-steel" />
               <a href={SITE.telegram} target="_blank" rel="noopener noreferrer" className="text-ink underline-offset-4 hover:underline">
-                Telegram — {SITE.phoneDisplay}
+                Telegram / {SITE.phoneDisplay}
               </a>
             </li>
           </ul>
-          <div className="mt-6 flex flex-col gap-3">
+          <div className="mt-9 flex flex-col gap-3">
             <CallButton />
             <WhatsAppButton />
           </div>
         </div>
-        <div className="min-h-80 overflow-hidden rounded-lg border border-line bg-placeholder">
-          <iframe
-            src={yandexMapSrc}
-            title="Склад Ильгама Кильдиярова на Яндекс.Карте"
-            loading="lazy"
-            className="h-full min-h-80 w-full"
-          />
-        </div>
       </div>
-    </Section>
+    </section>
   );
 }
