@@ -6,7 +6,7 @@ import { useMemo, useState } from "react";
 import { search } from "@/lib/search";
 import { waLink } from "@/lib/site";
 import { ArrowIcon, SearchIcon } from "./Icons";
-import { BTN, CallButton, StatusBadge } from "./ui";
+import { BTN, CallButton, MaxButton, StatusBadge } from "./ui";
 
 const EXAMPLES = ["цемент", "арматура 12", "сетка", "пеноплекс", "профнастил", "подоконник", "шины на трактор", "диски R15"];
 
@@ -58,6 +58,7 @@ export default function SearchClient() {
           <p className="mt-3 text-lg text-ink/75">Это не значит, что у меня этого нет. Позвоните, подскажу.</p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <CallButton />
+            <MaxButton />
             <a href={waLink(`Здравствуйте, Ильгам! Есть ли у вас: ${q}?`)} target="_blank" rel="noopener noreferrer" className={BTN.light}>
               Спросить в WhatsApp
             </a>
@@ -98,12 +99,16 @@ export default function SearchClient() {
                   <Link href={`/${h.category.slug}#assortiment`} className="block py-5 transition-colors duration-200 hover:bg-white/60">
                     <span className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
                       <span className="text-lg font-semibold text-graphite">{h.item.name}</span>
-                      <span className="title text-xl whitespace-nowrap text-ink">{h.item.price}</span>
+                      {h.item.price && <span className="title text-xl whitespace-nowrap text-ink">{h.item.price}</span>}
                     </span>
                     <span className="mt-1 flex flex-wrap gap-x-3 text-sm text-steel">
                       <span>{h.category.title}</span>
-                      <span aria-hidden>/</span>
-                      <span>{h.item.spec}</span>
+                      {h.item.spec && (
+                        <>
+                          <span aria-hidden>/</span>
+                          <span>{h.item.spec}</span>
+                        </>
+                      )}
                     </span>
                     <StatusBadge status={h.status} className="mt-3 text-xs" />
                   </Link>

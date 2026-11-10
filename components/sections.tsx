@@ -3,10 +3,10 @@ import Link from "next/link";
 import type { CSSProperties } from "react";
 import ilgam from "@/public/img/ilgam.jpg";
 import { categoriesByGroup, categoriesByHub, HUBS, type Category, type GroupName, type HubKey } from "@/lib/catalog";
-import { SITE, telLink, yandexMapSrc } from "@/lib/site";
-import { ArrowIcon, ClockIcon, PhoneIcon, PinIcon, PlusIcon, TelegramIcon, WhatsAppIcon } from "./Icons";
+import { mapLink, SITE, telLink, yandexMapSrc } from "@/lib/site";
+import { ArrowIcon, ClockIcon, MaxIcon, PhoneIcon, PinIcon, PlusIcon, TelegramIcon, WhatsAppIcon } from "./Icons";
 import SearchBox from "./SearchBox";
-import { BTN, CallButton, Kicker, ParallaxImage, StatusBadge, TypeTile, WhatsAppButton, WRAP } from "./ui";
+import { BTN, CallButton, ContactButtons, Kicker, MaxButton, ParallaxImage, StatusBadge, TypeTile, WhatsAppButton, WRAP } from "./ui";
 
 const delay = (ms: number) => ({ "--d": `${ms}ms` }) as CSSProperties;
 
@@ -139,8 +139,11 @@ export function Directions() {
 /* ---------- 3. Почему ко мне: тёмная полоса, крупная типографика без иконок ---------- */
 
 const FACTS = [
-  { title: "[15] лет на рынке", text: "Работаю в регионе с [____] года." },
-  { title: "Свой склад", text: "[Населённый пункт, адрес склада]. Товар лежит под крышей." },
+  { title: "Лучшие предложения на рынке!", text: "Работаю в регионе только с проверенными поставщиками!" },
+  {
+    title: "Свой склад",
+    text: "Адрес: Башкортостан, Салаватский район, д. Чулпан, ул. Коммунаров, 19/4. Также есть склад-филиал в Дуванском районе: Месягутово, ул. Промышленная, 14.",
+  },
   { title: "Доставка по северо-востоку РБ", text: "Салаватский район и соседние районы республики." },
   { title: "Можно приехать и посмотреть", text: "Каждый день с 9:00 до 18:00. Позвоните, что едете." },
 ];
@@ -188,11 +191,10 @@ export function About() {
             На звонки отвечаю сам. Если что-то не так, разбираюсь в тот же день.
           </p>
           <div className="mt-8 space-y-4 text-lg leading-relaxed text-ink/85">
-            <p>Меня зовут Ильгам Кильдияров. Я местный и много лет вожу стройматериалы и колёса по нашему району.</p>
+            <p>Меня зовут Ильгам Кильдияров. Я местный и вожу стройматериалы и колёса по нашему району по лучшим ценам.</p>
             <p>Не обещаю того, чего не могу. Если товара нет или не успеваю привезти, скажу сразу, как есть.</p>
             <p>Мне важно, чтобы вы пришли ко мне ещё раз и посоветовали меня соседу.</p>
           </div>
-          <p className="mt-4 text-sm text-steel">[Текст-пример. Заменить на слова Ильгама.]</p>
           <Link href="/pravila" className={`${BTN.light} mt-9`}>
             Мои правила работы <ArrowIcon className="size-5" />
           </Link>
@@ -228,42 +230,39 @@ export function HowToOrder() {
             </li>
           ))}
         </ol>
-        <div data-reveal className="mt-16 flex flex-col gap-3 sm:flex-row">
-          <CallButton />
-          <WhatsAppButton />
-        </div>
+        <ContactButtons className="mt-16" />
       </div>
     </section>
   );
 }
 
-/* ---------- 6. Отзывы: места под настоящие скриншоты ---------- */
+/* ---------- 6. Отзыв: одно настоящее видео ---------- */
 
 export function Reviews() {
   return (
     <section id="otzyvy" className="scroll-mt-20 py-24 md:py-36">
-      <div className={`${WRAP} grid gap-12 lg:grid-cols-12`}>
-        <div data-reveal className="lg:col-span-4">
-          <h2 className="display text-[clamp(2.8rem,6.5vw,5.2rem)] text-graphite">Отзывы</h2>
-          <p className="mt-6 text-lg text-ink/75">
-            Переписки с прорабами и частными заказчиками, как есть, без правок.
+      <div className={`${WRAP} grid items-center gap-12 lg:grid-cols-12`}>
+        <div data-reveal className="lg:col-span-6">
+          <h2 className="display text-[clamp(2.8rem,6.5vw,5.2rem)] text-graphite">Отзыв</h2>
+          <p className="mt-6 max-w-md text-lg text-ink/75">
+            Видеоотзыв клиента, как есть: без постановки и без правок.
           </p>
-          <p className="mt-4 text-sm text-steel">
-            [Сюда нужны скриншоты настоящих переписок в WhatsApp. Выдуманные отзывы не ставим.]
-          </p>
+          <ContactButtons className="mt-10" />
         </div>
-        <ul className="grid grid-cols-3 gap-3 md:gap-5 lg:col-span-8">
-          {[1, 2, 3].map((n, i) => (
-            <li
-              key={n}
-              data-reveal
-              style={delay(i * 100)}
-              className="flex aspect-[9/16] items-center justify-center rounded-2xl bg-sand p-3 text-center text-xs leading-snug text-steel md:text-sm"
+        <div data-reveal style={delay(120)} className="lg:col-span-5 lg:col-start-8">
+          <div className="mx-auto max-w-[360px] overflow-hidden rounded-2xl bg-ink shadow-lift">
+            {/* Видео не запускается само: только по нажатию */}
+            <video
+              controls
+              playsInline
+              preload="none"
+              poster="/img/otziv-poster.jpg"
+              className="aspect-[9/16] w-full object-cover"
             >
-              [Скриншот переписки {n}]
-            </li>
-          ))}
-        </ul>
+              <source src="/video/otziv.mp4" type="video/mp4" />
+            </video>
+          </div>
+        </div>
       </div>
     </section>
   );
@@ -306,7 +305,11 @@ export function Faq() {
           <div data-reveal className="lg:sticky lg:top-28">
             <h2 className="display text-[clamp(2.6rem,5.5vw,4.4rem)] text-graphite">Частые вопросы</h2>
             <p className="mt-6 text-lg text-ink/75">Не нашли ответ? Спросите напрямую.</p>
-            <CallButton className="mt-6" />
+            <div className="mt-6 flex flex-col gap-3">
+              <CallButton />
+              <MaxButton />
+              <WhatsAppButton label="WhatsApp" />
+            </div>
           </div>
         </div>
         <div className="border-t border-line lg:col-span-8">
@@ -349,10 +352,27 @@ export function Contacts() {
               <a href={telLink} className="font-semibold text-ink">{SITE.phoneDisplay}</a>
             </li>
             <li className="flex gap-3">
+              <MaxIcon className="mt-1 size-5 shrink-0 text-steel" />
+              <a href={SITE.max} target="_blank" rel="noopener noreferrer" className="text-ink underline-offset-4 hover:underline">
+                MAX / {SITE.phoneDisplay}
+              </a>
+            </li>
+            <li className="flex gap-3">
               <PinIcon className="mt-1 size-5 shrink-0 text-steel" />
               <span>
-                {SITE.address}
-                <span className="block text-base text-steel">{SITE.addressDetail}</span>
+                <span className="block text-sm text-steel">Склад</span>
+                <a href={mapLink(`Салаватский район, ${SITE.street}`)} target="_blank" rel="noopener noreferrer" className="underline-offset-4 hover:underline">
+                  {SITE.address}
+                </a>
+              </span>
+            </li>
+            <li className="flex gap-3">
+              <PinIcon className="mt-1 size-5 shrink-0 text-steel" />
+              <span>
+                <span className="block text-sm text-steel">Склад-филиал</span>
+                <a href={mapLink(SITE.branch)} target="_blank" rel="noopener noreferrer" className="underline-offset-4 hover:underline">
+                  {SITE.branch}
+                </a>
               </span>
             </li>
             <li className="flex gap-3">
@@ -374,7 +394,14 @@ export function Contacts() {
           </ul>
           <div className="mt-9 flex flex-col gap-3">
             <CallButton />
-            <WhatsAppButton />
+            <div className="grid grid-cols-2 gap-3">
+              <a href={SITE.max} target="_blank" rel="noopener noreferrer" className={BTN.light}>
+                <MaxIcon className="size-5" /> MAX
+              </a>
+              <a href={SITE.whatsapp} target="_blank" rel="noopener noreferrer" className={BTN.light}>
+                <WhatsAppIcon className="size-5" /> WhatsApp
+              </a>
+            </div>
           </div>
         </div>
       </div>

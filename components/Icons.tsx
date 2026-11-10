@@ -114,3 +114,12 @@ export function PlusIcon(p: P) {
     </svg>
   );
 }
+
+// Значок мессенджера MAX: кольцо-облачко, одним цветом
+export function MaxIcon(p: P) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" fillRule="evenodd" aria-hidden {...p}>
+      <path d="M12 2.5a9.5 9.5 0 0 0-8.9 12.8c.3.8.2 1.7-.2 2.5l-.9 1.9c-.3.7.3 1.5 1.1 1.3l2.6-.7c.6-.2 1.3-.1 1.9.2A9.5 9.5 0 1 0 12 2.5Zm0 4a5.5 5.5 0 1 1-3.7 9.6c-.3-.3-.5-.6-.6-1l-.4-1.3A5.5 5.5 0 0 1 12 6.5Z" />
+    </svg>
+  );
+}

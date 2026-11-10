@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { SITE, telLink, waLink } from "@/lib/site";
-import { PhoneIcon, WhatsAppIcon } from "./Icons";
+import { MaxIcon, PhoneIcon, WhatsAppIcon } from "./Icons";
 import { BTN } from "./ui";
 
 // Вместо корзины: человек пишет список, а Ильгам отвечает итоговой ценой с доставкой.
@@ -43,18 +43,22 @@ export default function EstimateForm({ topic, placeholder }: { topic: string; pl
           className={field}
         />
       </label>
-      <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+      <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
         <button type="submit" className={BTN.primary}>
           <WhatsAppIcon className="size-5" />
           Отправить список в WhatsApp
         </button>
+        <a href={SITE.max} target="_blank" rel="noopener noreferrer" className={BTN.light}>
+          <MaxIcon className="size-5" />
+          Написать в MAX
+        </a>
         <a href={telLink} className={BTN.light}>
           <PhoneIcon className="size-5" />
-          Или позвонить
+          Позвонить
         </a>
       </div>
       <p className="mt-5 text-sm text-steel">
-        Откроется WhatsApp с вашим списком. Я посчитаю и отвечу итоговой ценой с доставкой.
+        Откроется WhatsApp с вашим списком. В MAX список можно вставить в сообщение. Я посчитаю и отвечу итоговой ценой с доставкой.
       </p>
     </form>
   );

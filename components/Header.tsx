@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { SITE, telLink } from "@/lib/site";
-import { PhoneIcon, SearchIcon, TelegramIcon, WhatsAppIcon } from "./Icons";
+import { MaxIcon, PhoneIcon, SearchIcon, TelegramIcon, WhatsAppIcon } from "./Icons";
 import { WRAP } from "./ui";
 
 export function Logo({ className = "" }: { className?: string }) {
@@ -31,15 +31,18 @@ export default function Header() {
           <Link href="/poisk" className={iconBtn} aria-label="Поиск по товарам">
             <SearchIcon className="size-5" />
           </Link>
+          <a href={SITE.max} target="_blank" rel="noopener noreferrer" className={iconBtn} aria-label="Написать в MAX">
+            <MaxIcon className="size-5" />
+          </a>
           <a href={SITE.whatsapp} target="_blank" rel="noopener noreferrer" className={iconBtn} aria-label="Написать в WhatsApp">
             <WhatsAppIcon className="size-5" />
           </a>
-          <a href={SITE.telegram} target="_blank" rel="noopener noreferrer" className={iconBtn} aria-label="Написать в Telegram">
+          <a href={SITE.telegram} target="_blank" rel="noopener noreferrer" className={`${iconBtn} max-sm:hidden`} aria-label="Написать в Telegram">
             <TelegramIcon className="size-5" />
           </a>
           <a
             href={telLink}
-            className="ml-1 inline-flex h-10 items-center gap-2 rounded-lg px-2 font-semibold text-white transition-colors duration-200 hover:bg-white/10 sm:px-3"
+            className="ml-1 inline-flex h-10 items-center gap-2 rounded-lg bg-terra px-3 font-semibold text-white shadow-terra transition-colors duration-200 hover:bg-terra-dark"
             aria-label={`Позвонить ${SITE.phoneDisplay}`}
           >
             <PhoneIcon className="size-5" />

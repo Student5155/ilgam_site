@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import SearchClient from "@/components/SearchClient";
+import { ContactButtons } from "@/components/ui";
 
 export const metadata: Metadata = {
   title: "Поиск по товарам | Ильгам Кильдияров, Салаватский район РБ",
@@ -20,6 +21,10 @@ export default function Page() {
         <Suspense fallback={<div className="h-16 rounded-2xl bg-white shadow-soft" />}>
           <SearchClient />
         </Suspense>
+      </div>
+      <div className="mt-20 border-t border-line pt-10">
+        <p className="title text-2xl text-graphite md:text-3xl">Не нашли нужное? Спросите напрямую.</p>
+        <ContactButtons className="mt-6" />
       </div>
     </div>
   );

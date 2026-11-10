@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import type { CSSProperties } from "react";
-import { getCategory, HUBS, type Slug } from "@/lib/catalog";
+import { getCategory, HUBS, PRICE_NOTE_EXACT, type Category, type Item, type Slug } from "@/lib/catalog";
 import { SITE, waLink } from "@/lib/site";
 import EstimateForm from "./EstimateForm";
 import { WhatsAppIcon } from "./Icons";
 import {
   CallButton,
   CategoryVisual,
+  MaxButton,
   EstimateLink,
   Kicker,
   ParallaxImage,
@@ -77,8 +79,9 @@ export default function CategoryPage({ slug }: { slug: Slug }) {
             )}
             <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <CallButton />
+              <MaxButton tone="dark" />
               <EstimateLink tone="dark" />
-              <WhatsAppButton tone="dark" label="Написать" text={`Здравствуйте, ${SITE.firstName}! Интересует: ${c.title.toLowerCase()}.`} />
+              <WhatsAppButton tone="dark" label="WhatsApp" text={`Здравствуйте, ${SITE.firstName}! Интересует: ${c.title.toLowerCase()}.`} />
             </div>
           </div>
         </div>
@@ -107,50 +110,12 @@ export default function CategoryPage({ slug }: { slug: Slug }) {
       <section id="assortiment" className="scroll-mt-20 py-20 md:py-28">
         <div className={WRAP}>
           <div data-reveal className="grid gap-6 lg:grid-cols-12 lg:items-end">
-            <h2 className="display min-w-0 text-[10.5vw] text-graphite sm:text-[clamp(2.6rem,6vw,4.8rem)] lg:col-span-7">Ассортимент и цены</h2>
-            <p className="text-lg text-ink/70 lg:col-span-5">
-              Цены «от» как ориентир. Точную цену с доставкой назову, когда узнаю объём и адрес.
-            </p>
+            <h2 className="display min-w-0 text-[10.5vw] text-graphite sm:text-[clamp(2.6rem,6vw,4.8rem)] lg:col-span-7">
+              {c.assortment === "chips" ? "Что можно заказать" : "Ассортимент"}
+            </h2>
+            <p className="text-lg text-ink/70 lg:col-span-5">{priceNote(c)}</p>
           </div>
-
-          {/* Таблица на компьютере */}
-          <table data-reveal className="mt-14 hidden w-full text-left lg:table">
-            <thead className="border-b-2 border-graphite text-sm text-steel">
-              <tr>
-                <th className="py-4 pr-6 font-medium">Наименование</th>
-                <th className="py-4 pr-6 font-medium">Характеристики</th>
-                <th className="py-4 pr-6 font-medium">Наличие</th>
-                <th className="py-4 pr-6 font-medium whitespace-nowrap">Цена</th>
-                <th className="py-4"><span className="sr-only">Запрос</span></th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-line">
-              {c.items.map((item) => (
-                <tr key={item.name} className="transition-colors duration-200 hover:bg-white">
-                  <td className="py-6 pr-6 pl-2 text-lg font-semibold text-graphite">{item.name}</td>
-                  <td className="py-6 pr-6 text-ink/75">{item.spec}</td>
-                  <td className="py-6 pr-6"><StatusBadge status={item.status ?? c.status} className="text-xs" /></td>
-                  <td className="title py-6 pr-6 text-xl whitespace-nowrap text-ink">{item.price}</td>
-                  <td className="py-6 pr-2 text-right"><PriceRequest name={item.name} /></td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-
-          {/* Список на телефоне и планшете */}
-          <ul className="mt-10 divide-y divide-line border-y border-line lg:hidden">
-            {c.items.map((item) => (
-              <li key={item.name} className="py-6">
-                <p className="text-lg font-semibold text-graphite">{item.name}</p>
-                <p className="mt-1 text-base text-ink/75">{item.spec}</p>
-                <p className="title mt-3 text-2xl text-ink">{item.price}</p>
-                <StatusBadge status={item.status ?? c.status} className="mt-3 text-xs" />
-                <div className="mt-4">
-                  <PriceRequest name={item.name} />
-                </div>
-              </li>
-            ))}
-          </ul>
+          {c.assortment === "chips" ? <Chips c={c} /> : <Table c={c} />}
         </div>
       </section>
 
@@ -215,10 +180,98 @@ function PriceRequest({ name }: { name: string }) {
       href={waLink(`Здравствуйте, ${SITE.firstName}! Нужна цена с доставкой: ${name}. Количество: . Куда: .`)}
       target="_blank"
       rel="noopener noreferrer"
-      className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-white px-4 text-sm font-semibold whitespace-nowrap text-graphite shadow-soft transition-[transform,box-shadow] duration-300 hover:-translate-y-0.5 hover:shadow-lift"
+      className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-white px-4 py-2 text-left text-sm font-semibold text-graphite xl:whitespace-nowrap shadow-soft transition-[transform,box-shadow] duration-300 hover:-translate-y-0.5 hover:shadow-lift"
     >
-      <WhatsAppIcon className="size-4 text-stock" />
+      <WhatsAppIcon className="size-4 shrink-0 text-stock" />
       Запросить цену с доставкой
     </a>
+  );
+}
+
+// Подпись над ассортиментом: точные цены есть только там, где они реально указаны
+function priceNote(c: Category) {
+  const exact = c.items.every((i) => i.price && !i.price.includes("["));
+  if (c.assortment === "table" && exact) return "Цены за упаковку или штуку. Итог с доставкой посчитаю по вашему адресу.";
+  if (c.assortment === "table") return "Цены «от» как ориентир. " + PRICE_NOTE_EXACT;
+  return PRICE_NOTE_EXACT;
+}
+
+// Варианты плашками, без таблицы
+function Chips({ c }: { c: Category }) {
+  return (
+    <div data-reveal className="mt-12">
+      <ul className="flex flex-wrap gap-3">
+        {c.items.map((item) => (
+          <li key={item.name} className="rounded-full bg-white px-5 py-3 text-lg font-medium text-graphite shadow-soft">
+            {item.name}
+          </li>
+        ))}
+      </ul>
+      <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+        <EstimateLink />
+        <PriceRequest name={c.title} />
+      </div>
+    </div>
+  );
+}
+
+function Thumb({ item }: { item: Item }) {
+  if (!item.photo) return null;
+  return (
+    <div className="relative size-20 shrink-0 overflow-hidden rounded-xl bg-white shadow-soft md:size-24">
+      <Image src={item.photo} alt={item.name} fill placeholder="blur" sizes="96px" className="object-contain p-1.5" />
+    </div>
+  );
+}
+
+function Table({ c }: { c: Category }) {
+  const withPrice = c.assortment === "table";
+  const withPhotos = c.items.some((i) => i.photo);
+  return (
+    <>
+      {/* Таблица на компьютере */}
+      <table data-reveal className="mt-14 hidden w-full text-left xl:table">
+        <thead className="border-b-2 border-graphite text-sm text-steel">
+          <tr>
+            {withPhotos && <th className="py-4 pr-6"><span className="sr-only">Фото</span></th>}
+            <th className="py-4 pr-6 font-medium">Наименование</th>
+            <th className="py-4 pr-6 font-medium">Характеристики</th>
+            <th className="py-4 pr-6 font-medium">Наличие</th>
+            {withPrice && <th className="py-4 pr-6 font-medium whitespace-nowrap">Цена</th>}
+            <th className="py-4"><span className="sr-only">Запрос</span></th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-line">
+          {c.items.map((item, i) => (
+            <tr key={i} className="transition-colors duration-200 hover:bg-white">
+              {withPhotos && <td className="py-4 pr-6 pl-2"><Thumb item={item} /></td>}
+              <td className={`py-6 pr-6 text-lg font-semibold text-graphite ${withPhotos ? "" : "pl-2"}`}>{item.name}</td>
+              <td className="py-6 pr-6 text-ink/75">{item.spec}</td>
+              <td className="py-6 pr-6"><StatusBadge status={item.status ?? c.status} className="text-xs whitespace-nowrap" /></td>
+              {withPrice && <td className="title py-6 pr-6 text-xl whitespace-nowrap text-ink">{item.price}</td>}
+              <td className="py-6 pr-2 text-right"><PriceRequest name={item.name} /></td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      {/* Список на телефоне и планшете */}
+      <ul className="mt-10 divide-y divide-line border-y border-line xl:hidden">
+        {c.items.map((item, i) => (
+          <li key={i} className="flex gap-4 py-6">
+            <Thumb item={item} />
+            <div className="min-w-0 flex-1">
+              <p className="text-lg font-semibold text-graphite">{item.name}</p>
+              <p className="mt-1 text-base text-ink/75">{item.spec}</p>
+              {withPrice && item.price && <p className="title mt-3 text-2xl text-ink">{item.price}</p>}
+              <StatusBadge status={item.status ?? c.status} className="mt-3 text-xs" />
+              <div className="mt-4">
+                <PriceRequest name={item.name} />
+              </div>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </>
   );
 }

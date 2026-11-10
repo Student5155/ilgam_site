@@ -3,7 +3,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import type { Category, Status } from "@/lib/catalog";
 import { SITE, telLink, waLink } from "@/lib/site";
-import { ArrowIcon, PhoneIcon, TelegramIcon, WhatsAppIcon } from "./Icons";
+import { ArrowIcon, MaxIcon, PhoneIcon, TelegramIcon, WhatsAppIcon } from "./Icons";
 
 // Общий контейнер: широкий, с небольшими полями, контент держится в середине
 export const WRAP = "mx-auto w-full max-w-[1360px] px-5 sm:px-8 lg:px-12";
@@ -21,9 +21,35 @@ export const BTN = {
 
 type Tone = "light" | "dark";
 
-export function CallButton({ className = "", label = "Позвонить" }: { className?: string; label?: string }) {
+// Кнопка мессенджера MAX
+export function MaxButton({
+  className = "",
+  label = "Написать в MAX",
+  tone = "light",
+}: {
+  className?: string;
+  label?: string;
+  tone?: Tone | "primary";
+}) {
   return (
-    <a href={telLink} className={`${BTN.primary} ${className}`}>
+    <a href={SITE.max} target="_blank" rel="noopener noreferrer" className={`${BTN[tone]} ${className}`}>
+      <MaxIcon className="size-5" />
+      {label}
+    </a>
+  );
+}
+
+export function CallButton({
+  className = "",
+  label = "Позвонить",
+  tone = "primary",
+}: {
+  className?: string;
+  label?: string;
+  tone?: Tone | "primary";
+}) {
+  return (
+    <a href={telLink} className={`${BTN[tone]} ${className}`}>
       <PhoneIcon className="size-5" />
       {label}
     </a>
@@ -46,6 +72,25 @@ export function WhatsAppButton({
       <WhatsAppIcon className="size-5" />
       {label}
     </a>
+  );
+}
+
+// Набор кнопок связи: сначала позвонить, вторая MAX, третья WhatsApp
+export function ContactButtons({
+  tone = "light",
+  className = "",
+  waText,
+}: {
+  tone?: Tone;
+  className?: string;
+  waText?: string;
+}) {
+  return (
+    <div className={`flex flex-col gap-3 sm:flex-row sm:flex-wrap ${className}`}>
+      <CallButton />
+      <MaxButton tone={tone} />
+      <WhatsAppButton tone={tone} label="WhatsApp" text={waText} />
+    </div>
   );
 }
 
@@ -176,6 +221,13 @@ export function CategoryVisual({
   speed?: number;
 }) {
   const photo = category.photos?.[0];
+  if (photo?.fit === "contain") {
+    return (
+      <div className={`relative overflow-hidden ${tone === "dark" ? "bg-ink" : "bg-sand"} ${className}`}>
+        <Image src={photo.src} alt={photo.alt} fill placeholder="blur" preload={preload} sizes={sizes} className="object-contain p-4 md:p-8" />
+      </div>
+    );
+  }
   if (photo) {
     return <ParallaxImage src={photo.src} alt={photo.alt} sizes={sizes} preload={preload} speed={speed} className={className} />;
   }
@@ -196,7 +248,7 @@ export function RelatedTile({ category }: { category: Category }) {
               fill
               placeholder="blur"
               sizes="(min-width: 1024px) 30vw, (min-width: 640px) 50vw, 100vw"
-              className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+              className={`${category.photos[0].fit === "contain" ? "bg-ink object-contain p-3" : "object-cover"} transition-transform duration-700 ease-out group-hover:scale-[1.04]`}
             />
           </div>
         ) : (

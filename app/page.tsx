@@ -1,6 +1,6 @@
 import ilgam from "@/public/img/ilgam.jpg";
 import { About, Contacts, Directions, Faq, HowToOrder, HubSplit, Reviews, WhyMe } from "@/components/sections";
-import { CallButton, ParallaxImage, WhatsAppButton } from "@/components/ui";
+import { ContactButtons, ParallaxImage } from "@/components/ui";
 
 export default function Home() {
   return (
@@ -36,10 +36,7 @@ export default function Home() {
               Цемент, арматура, сетка, профнастил, утеплители, окна, шины и диски. Один склад в Салаватском районе и
               доставка по всему северо-востоку Башкортостана.
             </p>
-            <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-              <CallButton />
-              <WhatsAppButton tone="dark" />
-            </div>
+            <ContactButtons tone="dark" className="mt-10" />
           </div>
         </div>
       </section>

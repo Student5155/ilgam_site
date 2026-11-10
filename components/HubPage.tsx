@@ -3,7 +3,7 @@ import { HUBS, type HubKey } from "@/lib/catalog";
 import { SITE } from "@/lib/site";
 import { ArrowIcon } from "./Icons";
 import { DirectionIndex, HowToOrder } from "./sections";
-import { CallButton, WhatsAppButton, WRAP } from "./ui";
+import { ContactButtons, WRAP } from "./ui";
 
 export default function HubPage({ hub }: { hub: HubKey }) {
   const h = HUBS[hub];
@@ -25,10 +25,7 @@ export default function HubPage({ hub }: { hub: HubKey }) {
           </h1>
           <div className="mt-12 grid gap-8 lg:grid-cols-12 lg:items-end">
             <p className={`text-xl lg:col-span-6 ${dark ? "text-white/75" : "text-ink/80"}`}>{h.text}</p>
-            <div className="flex flex-col gap-3 sm:flex-row lg:col-span-6 lg:justify-end">
-              <CallButton />
-              <WhatsAppButton tone={dark ? "dark" : "light"} />
-            </div>
+            <ContactButtons tone={dark ? "dark" : "light"} className="lg:col-span-6 lg:justify-end" />
           </div>
         </div>
       </section>

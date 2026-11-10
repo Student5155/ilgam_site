@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import type { CSSProperties } from "react";
 import ilgam from "@/public/img/ilgam.jpg";
-import { CallButton, ParallaxImage, WhatsAppButton, WRAP } from "@/components/ui";
+import { ContactButtons, ParallaxImage, WRAP } from "@/components/ui";
 
 export const metadata: Metadata = {
   title: "Мои правила работы | Ильгам Кильдияров, Салаватский район РБ",
@@ -115,9 +115,8 @@ export default function Page() {
             «Я лично контролирую отгрузку. Если вам привезли не тот объём или бракованный профнастил, звоните мне
             напрямую. Решу вопрос в тот же день».
           </p>
-          <div data-reveal className="mt-12 flex flex-col gap-3 sm:flex-row">
-            <CallButton label="Позвонить Ильгаму" />
-            <WhatsAppButton />
+          <div data-reveal>
+            <ContactButtons className="mt-12" />
           </div>
         </div>
       </section>

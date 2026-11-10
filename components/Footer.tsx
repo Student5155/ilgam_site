@@ -20,8 +20,10 @@ export default function Footer() {
             {SITE.phoneDisplay}
           </a>
           <p className="mt-5 text-base">{SITE.address}</p>
+          <p className="text-base">Филиал: {SITE.branch}</p>
           <p className="text-base">{SITE.hours}</p>
           <div className="mt-5 flex gap-5 text-base">
+            <a href={SITE.max} target="_blank" rel="noopener noreferrer" className={`${link} font-semibold text-white`}>MAX</a>
             <a href={SITE.whatsapp} target="_blank" rel="noopener noreferrer" className={link}>WhatsApp</a>
             <a href={SITE.telegram} target="_blank" rel="noopener noreferrer" className={link}>Telegram</a>
           </div>

@@ -51,8 +51,8 @@ const localBusiness = {
     "@type": "PostalAddress",
     addressCountry: "RU",
     addressRegion: "Республика Башкортостан",
-    addressLocality: "Салаватский район",
-    // streetAddress: "[улица, дом склада]": добавить, когда будет точный адрес
+    addressLocality: "д. Чулпан, Салаватский район",
+    streetAddress: "ул. Коммунаров, 19/4",
   },
   geo: { "@type": "GeoCoordinates", latitude: SITE.coords.lat, longitude: SITE.coords.lon },
   openingHoursSpecification: [
