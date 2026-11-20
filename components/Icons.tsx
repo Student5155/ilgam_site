@@ -123,3 +123,13 @@ export function MaxIcon(p: P) {
     </svg>
   );
 }
+
+export function InstagramIcon(p: P) {
+  return (
+    <svg viewBox="0 0 24 24" {...base} {...p}>
+      <rect x="3.5" y="3.5" width="17" height="17" rx="5" />
+      <circle cx="12" cy="12" r="4" />
+      <circle cx="17.3" cy="6.7" r="0.6" fill="currentColor" />
+    </svg>
+  );
+}

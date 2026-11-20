@@ -18,8 +18,19 @@ export const SITE = {
   branch: "Дуванский район, с. Месягутово, ул. Промышленная, 14",
   hours: "Ежедневно с 9:00 до 18:00, без выходных",
   coords: { lat: 54.206932, lon: 59.608124 },
-  // Домен сайта: заменить, когда будет куплен
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+  // Юридические данные
+  legalName: "ООО «УРАЛИМПЕРИЯ»",
+  inn: "022201842123",
+  instagram: "https://www.instagram.com/don.kildiarov/",
+  instagramHandle: "@don.kildiarov",
+  // Адрес сайта для поисковиков (карта сайта, канонические ссылки).
+  // Когда будет свой домен, задать его в Vercel: переменная NEXT_PUBLIC_SITE_URL = https://домен.ru
+  // Пока берём основной адрес проекта на Vercel, который Vercel подставляет сам при сборке.
+  url:
+    process.env.NEXT_PUBLIC_SITE_URL ??
+    (process.env.VERCEL_PROJECT_PRODUCTION_URL
+      ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+      : "http://localhost:3000"),
 };
 
 export const telLink = `tel:${SITE.phone}`;

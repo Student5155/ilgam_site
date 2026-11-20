@@ -28,7 +28,7 @@ export default function Header() {
           <Link href="/#kontakty" className={navLink}>Контакты</Link>
         </nav>
         <div className="ml-auto flex items-center gap-1">
-          <Link href="/poisk" className={iconBtn} aria-label="Поиск по товарам">
+          <Link href="/poisk" className={`${iconBtn} max-[359px]:hidden`} aria-label="Поиск по товарам">
             <SearchIcon className="size-5" />
           </Link>
           <a href={SITE.max} target="_blank" rel="noopener noreferrer" className={iconBtn} aria-label="Написать в MAX">

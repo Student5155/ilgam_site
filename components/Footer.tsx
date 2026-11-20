@@ -22,10 +22,11 @@ export default function Footer() {
           <p className="mt-5 text-base">{SITE.address}</p>
           <p className="text-base">Филиал: {SITE.branch}</p>
           <p className="text-base">{SITE.hours}</p>
-          <div className="mt-5 flex gap-5 text-base">
+          <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-base">
             <a href={SITE.max} target="_blank" rel="noopener noreferrer" className={`${link} font-semibold text-white`}>MAX</a>
             <a href={SITE.whatsapp} target="_blank" rel="noopener noreferrer" className={link}>WhatsApp</a>
             <a href={SITE.telegram} target="_blank" rel="noopener noreferrer" className={link}>Telegram</a>
+            <a href={SITE.instagram} target="_blank" rel="noopener noreferrer" className={link}>Instagram*</a>
           </div>
         </div>
         {(["stroyka", "avto"] as const).map((hub) => (
@@ -60,9 +61,9 @@ export default function Footer() {
       </div>
 
       <div className="border-t border-white/10">
-        <div className={`${WRAP} flex flex-col gap-1 py-6 text-sm sm:flex-row sm:justify-between`}>
-          <span>© <Year /> {SITE.name}</span>
-          <span>Частный предприниматель / ИНН [___________]</span>
+        <div className={`${WRAP} flex flex-col gap-2 py-6 text-sm lg:flex-row lg:justify-between lg:gap-10`}>
+          <span>© <Year /> {SITE.name} / {SITE.legalName}, ИНН {SITE.inn}</span>
+          <span className="text-white/45">* Instagram принадлежит компании Meta, деятельность которой признана экстремистской и запрещена в России.</span>
         </div>
       </div>
     </footer>

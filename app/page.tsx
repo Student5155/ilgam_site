@@ -1,13 +1,33 @@
+import type { Metadata } from "next";
 import ilgam from "@/public/img/ilgam.jpg";
-import { About, Contacts, Directions, Faq, HowToOrder, HubSplit, Reviews, WhyMe } from "@/components/sections";
+import { About, Contacts, Directions, FAQ, Faq, Geography, HowToOrder, HubSplit, Instagram, Reviews, WhyMe } from "@/components/sections";
 import { ContactButtons, ParallaxImage } from "@/components/ui";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
+
+// Вопросы и ответы для поисковиков (FAQPage)
+const faqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: FAQ.map((f) => ({
+    "@type": "Question",
+    name: f.q,
+    acceptedAnswer: { "@type": "Answer", text: f.a },
+  })),
+};
 
 export default function Home() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd).replace(/</g, "\\u003c") }}
+      />
       {/* Первый экран: одна крупная сцена */}
       <section className="relative overflow-hidden bg-graphite text-white">
-        <div className="grid lg:min-h-[calc(100svh-4.5rem)] lg:grid-cols-12">
+        <div className="grid grid-cols-1 lg:min-h-[calc(100svh-4.5rem)] lg:grid-cols-12">
           <div className="relative h-[58svh] min-h-[360px] lg:order-last lg:col-span-5 lg:h-auto">
             <ParallaxImage
               src={ilgam}
@@ -33,8 +53,8 @@ export default function Home() {
               </span>
             </h1>
             <p className="mt-8 max-w-[34rem] text-lg text-white/75 md:text-xl">
-              Цемент, арматура, сетка, профнастил, утеплители, окна, шины и диски. Один склад в Салаватском районе и
-              доставка по всему северо-востоку Башкортостана.
+              Цемент, арматура, сетка, профнастил, металлочерепица, сайдинг, утеплители, окна, двери, шины и диски.
+              Склады в Салаватском и Дуванском районах, доставка по всему северо-востоку Башкортостана.
             </p>
             <ContactButtons tone="dark" className="mt-10" />
           </div>
@@ -43,8 +63,10 @@ export default function Home() {
 
       <HubSplit />
       <Directions />
+      <Geography />
       <WhyMe />
       <About />
+      <Instagram />
       <HowToOrder />
       <Reviews />
       <Faq />

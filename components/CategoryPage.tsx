@@ -5,6 +5,7 @@ import type { CSSProperties } from "react";
 import { getCategory, HUBS, PRICE_NOTE_EXACT, type Category, type Item, type Slug } from "@/lib/catalog";
 import { SITE, waLink } from "@/lib/site";
 import EstimateForm from "./EstimateForm";
+import LocalSeo from "./LocalSeo";
 import { WhatsAppIcon } from "./Icons";
 import {
   CallButton,
@@ -39,7 +40,7 @@ export default function CategoryPage({ slug }: { slug: Slug }) {
     <>
       {/* Сцена: заголовок и главное фото */}
       <section className="bg-graphite text-white">
-        <div className="grid lg:min-h-[78svh] lg:grid-cols-12">
+        <div className="grid grid-cols-1 lg:min-h-[78svh] lg:grid-cols-12">
           <div className="relative h-[44svh] min-h-[280px] lg:order-last lg:col-span-5 lg:h-auto">
             <CategoryVisual
               category={c}
@@ -50,7 +51,7 @@ export default function CategoryPage({ slug }: { slug: Slug }) {
               className="h-full w-full"
             />
           </div>
-          <div className="flex flex-col justify-center px-5 py-14 sm:px-8 lg:col-span-7 lg:py-20 lg:pr-12 lg:pl-[max(3rem,calc((100vw-1360px)/2+3rem))]">
+          <div className="flex min-w-0 flex-col justify-center px-5 py-14 sm:px-8 lg:col-span-7 lg:py-20 lg:pr-12 lg:pl-[max(3rem,calc((100vw-1360px)/2+3rem))]">
             <nav aria-label="Навигация" className="flex flex-wrap gap-x-2 text-sm text-white/55">
               <Link href="/" className="hover:text-white">Главная</Link>
               <span aria-hidden>/</span>
@@ -60,7 +61,7 @@ export default function CategoryPage({ slug }: { slug: Slug }) {
             </nav>
             <h1 className="mt-8">
               <span className="mb-5 block text-base font-medium text-white/60">{SITE.name}</span>
-              <span className="display block text-[9.6vw] sm:text-[clamp(2.7rem,6.6vw,4.4rem)] lg:text-[clamp(2.7rem,4.6vw,5rem)]">{c.h1}</span>
+              <span className="display block text-[8.6vw] sm:text-[clamp(2.7rem,6.6vw,4.4rem)] lg:text-[clamp(2.7rem,4.6vw,5rem)]">{c.h1}</span>
             </h1>
             <StatusBadge status={c.status} tone="dark" className="mt-8 self-start" />
             <div className="mt-6 max-w-xl space-y-3 text-lg leading-relaxed text-white/75">
@@ -140,6 +141,8 @@ export default function CategoryPage({ slug }: { slug: Slug }) {
           </ul>
         </div>
       </section>
+
+      <LocalSeo slug={c.slug} />
 
       {/* Смета */}
       <section id="smeta" className="scroll-mt-20 bg-white py-20 md:py-28">

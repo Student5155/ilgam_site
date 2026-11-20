@@ -37,9 +37,9 @@ export default function HubPage({ hub }: { hub: HubKey }) {
             href={`/${other.key}`}
             className="group mt-24 flex items-end justify-between gap-6 border-t border-line pt-10"
           >
-            <span>
+            <span className="min-w-0">
               <span className="block text-base text-steel">Нужно другое? Раздел</span>
-              <span className="display mt-2 block text-[clamp(3rem,9vw,6rem)] text-graphite">{other.label}</span>
+              <span className="display mt-2 block text-[clamp(2.4rem,11vw,6rem)] text-graphite">{other.label}</span>
             </span>
             <ArrowIcon className="mb-4 size-10 shrink-0 text-steel transition-transform duration-300 group-hover:translate-x-2 group-hover:text-graphite" />
           </Link>

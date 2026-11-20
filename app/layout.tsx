@@ -4,6 +4,7 @@ import Footer from "@/components/Footer";
 import FloatingCall from "@/components/FloatingCall";
 import Header from "@/components/Header";
 import Motion from "@/components/Motion";
+import { CITIES } from "@/lib/geo";
 import { SITE } from "@/lib/site";
 import "./globals.css";
 
@@ -25,7 +26,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
   title: "Ильгам Кильдияров | Стройматериалы, окна и колёса. Салаватский район, РБ",
   description:
-    "Цемент, арматура, кладочная сетка, профнастил, утеплители, пластиковые окна, шины и диски с доставкой по Салаватскому району и северо-востоку Башкортостана. Ильгам Кильдияров, +7 965 929-53-69.",
+    "Стройматериалы, пластиковые окна, входные двери, тракторные и грузовые шины с доставкой в Малояз, Месягутово, Верхние Киги, Большеустьикинское и Новобелокатай. Ильгам Кильдияров, +7 965 929-53-69.",
   openGraph: {
     type: "website",
     locale: "ru_RU",
@@ -43,7 +44,11 @@ const localBusiness = {
   "@context": "https://schema.org",
   "@type": "LocalBusiness",
   name: SITE.name,
-  description: "Стройматериалы, пластиковые окна, шины и диски на северо-востоке Башкортостана.",
+  legalName: SITE.legalName,
+  taxID: SITE.inn,
+  description:
+    "Стройматериалы, пластиковые окна, входные двери, металлочерепица, сайдинг, тракторные и грузовые шины на северо-востоке Башкортостана.",
+  sameAs: [SITE.instagram, SITE.max],
   telephone: SITE.phone,
   url: SITE.url,
   image: `${SITE.url}/img/ilgam.jpg`,
@@ -63,7 +68,25 @@ const localBusiness = {
       closes: "18:00",
     },
   ],
-  areaServed: "Северо-восток Республики Башкортостан",
+  areaServed: [
+    ...CITIES.map((c) => ({
+      "@type": "Place",
+      name: `${c.name}, ${c.district}, Республика Башкортостан`,
+    })),
+    { "@type": "AdministrativeArea", name: "Северо-восток Республики Башкортостан" },
+  ],
+  department: {
+    "@type": "LocalBusiness",
+    name: `${SITE.name}, склад-филиал`,
+    telephone: SITE.phone,
+    address: {
+      "@type": "PostalAddress",
+      addressCountry: "RU",
+      addressRegion: "Республика Башкортостан",
+      addressLocality: "с. Месягутово, Дуванский район",
+      streetAddress: "ул. Промышленная, 14",
+    },
+  },
 };
 
 // Включаем анимации до первой отрисовки, чтобы блоки не мигали

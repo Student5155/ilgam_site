@@ -33,6 +33,7 @@ body {
 
 /* Крупные заголовки: плотные, межстрочный 86%, трекинг в минус, строки стремятся к прямоугольнику */
 .display {
+  overflow-wrap: break-word;
   font-family: var(--font-display);
   font-weight: 800;
   font-variation-settings: "SHRP" 50;
@@ -42,6 +43,9 @@ body {
 }
 
 .title {
+  /* Длинные названия сёл переносятся по слогам, а не вылезают за экран */
+  hyphens: auto;
+  overflow-wrap: break-word;
   font-family: var(--font-display);
   font-weight: 700;
   font-variation-settings: "SHRP" 35;

@@ -46,7 +46,7 @@ export default function Page() {
     <>
       {/* Сцена: фото и слова Ильгама */}
       <section className="bg-graphite text-white">
-        <div className="grid lg:min-h-[80svh] lg:grid-cols-12">
+        <div className="grid grid-cols-1 lg:min-h-[80svh] lg:grid-cols-12">
           <div className="relative h-[52svh] min-h-[320px] lg:col-span-5 lg:h-auto">
             <ParallaxImage
               src={ilgam}

@@ -2,9 +2,10 @@ import Image from "next/image";
 import Link from "next/link";
 import type { CSSProperties } from "react";
 import ilgam from "@/public/img/ilgam.jpg";
+import { CITIES, LOCAL_SEO } from "@/lib/geo";
 import { categoriesByGroup, categoriesByHub, HUBS, type Category, type GroupName, type HubKey } from "@/lib/catalog";
 import { mapLink, SITE, telLink, yandexMapSrc } from "@/lib/site";
-import { ArrowIcon, ClockIcon, MaxIcon, PhoneIcon, PinIcon, PlusIcon, TelegramIcon, WhatsAppIcon } from "./Icons";
+import { ArrowIcon, ClockIcon, InstagramIcon, MaxIcon, PhoneIcon, PinIcon, PlusIcon, TelegramIcon, WhatsAppIcon } from "./Icons";
 import SearchBox from "./SearchBox";
 import { BTN, CallButton, ContactButtons, Kicker, MaxButton, ParallaxImage, StatusBadge, TypeTile, WhatsAppButton, WRAP } from "./ui";
 
@@ -61,7 +62,7 @@ function DirectionRow({ c }: { c: Category }) {
   return (
     <Link
       href={`/${c.slug}`}
-      className="group grid grid-cols-[1fr_auto] items-center gap-5 py-7 md:grid-cols-[170px_1fr_auto] md:gap-9"
+      className="group grid grid-cols-[minmax(0,1fr)_auto] items-center gap-5 py-7 md:grid-cols-[170px_minmax(0,1fr)_auto] md:gap-9"
     >
       <div className="relative hidden aspect-[4/3] overflow-hidden rounded-xl shadow-soft md:block">
         {photo ? (
@@ -79,7 +80,7 @@ function DirectionRow({ c }: { c: Category }) {
       </div>
       <div>
         <div className="flex flex-col items-start gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-5">
-          <span className="title text-[2rem] text-graphite md:text-[2.6rem]">{c.title}</span>
+          <span className="title text-[1.75rem] text-graphite sm:text-[2rem] md:text-[2.6rem]">{c.title}</span>
           <StatusBadge status={c.status} className="text-xs" />
         </div>
         <p className="mt-3 text-base text-ink/70 md:text-lg">{c.short}</p>
@@ -95,14 +96,14 @@ export function DirectionIndex({ groups }: { groups: GroupName[] }) {
   return (
     <div className="space-y-20">
       {groups.map((g, gi) => (
-        <div key={g} className="grid gap-4 lg:grid-cols-12 lg:gap-12">
+        <div key={g} className="grid grid-cols-1 gap-4 lg:grid-cols-12 lg:gap-12">
           <div className="lg:col-span-3">
             <div className="lg:sticky lg:top-28">
               <p className="text-sm text-steel">{String(gi + 1).padStart(2, "0")}</p>
               <h3 className="title mt-2 text-3xl text-graphite">{g}</h3>
             </div>
           </div>
-          <ul className="divide-y divide-line border-y border-line lg:col-span-9">
+          <ul className="min-w-0 divide-y divide-line border-y border-line lg:col-span-9">
             {categoriesByGroup(g).map((c) => (
               <li key={c.slug} data-reveal>
                 <DirectionRow c={c} />
@@ -130,6 +131,88 @@ export function Directions() {
         </div>
         <div className="mt-20 md:mt-28">
           <DirectionIndex groups={["Стройматериалы", "Окна и двери", "Колёса и диски"]} />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ---------- Где работаем: сёла и районы со ссылками на блоки на страницах ---------- */
+
+const LOCAL_PAGES = ["okna", "dveri", "cement", "shiny", "profnastil", "metallocherepica"] as const;
+
+export function Geography() {
+  return (
+    <section id="gde-rabotaem" className="scroll-mt-20 bg-sand py-24 md:py-32">
+      <div className={WRAP}>
+        <div className="grid gap-8 lg:grid-cols-12 lg:items-end">
+          <h2 data-reveal className="display min-w-0 text-[11vw] text-graphite sm:text-[clamp(2.8rem,6.5vw,5.2rem)] lg:col-span-7">
+            Где работаем
+          </h2>
+          <p data-reveal className="text-lg text-ink/75 lg:col-span-5">
+            Возим стройматериалы, окна, двери и шины по северо-востоку Башкортостана. Выберите своё село, чтобы
+            посмотреть условия.
+          </p>
+        </div>
+        <ul className="mt-14 border-t border-graphite/15">
+          {CITIES.map((c, i) => (
+            <li
+              key={c.key}
+              data-reveal
+              style={delay((i % 3) * 80)}
+              className="grid grid-cols-1 gap-4 border-b border-graphite/15 py-8 lg:grid-cols-12 lg:items-center lg:gap-10"
+            >
+              <div className="lg:col-span-4">
+                <p className="title text-[1.7rem] text-graphite sm:text-[2rem] md:text-[2.5rem]">{c.name}</p>
+                <p className="mt-1 text-base text-steel">{c.district}</p>
+              </div>
+              <p className="text-base text-ink/75 lg:col-span-3">{c.note}</p>
+              <ul className="flex flex-wrap gap-2 lg:col-span-5 lg:justify-end">
+                {LOCAL_PAGES.map((slug) => (
+                  <li key={slug}>
+                    <Link
+                      href={`/${slug}#${c.anchor}`}
+                      className="inline-flex rounded-full bg-white px-3.5 py-1.5 text-sm font-medium text-graphite shadow-[0_4px_14px_-8px_rgb(30_30_30/0.35)] transition-[transform,box-shadow] duration-300 hover:-translate-y-0.5 hover:shadow-soft"
+                    >
+                      {LOCAL_SEO[slug]?.label} {c.inName}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  );
+}
+
+/* ---------- Instagram: блог Ильгама ---------- */
+
+export function Instagram() {
+  return (
+    <section className="bg-white py-24 md:py-32">
+      <div className={`${WRAP} grid items-end gap-10 lg:grid-cols-12`}>
+        <div data-reveal className="lg:col-span-8">
+          <Kicker>Блог в Instagram*</Kicker>
+          <a
+            href={SITE.instagram}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="display mt-4 block break-all text-[11vw] text-graphite transition-colors duration-300 hover:text-ink sm:text-[clamp(3rem,7vw,6.4rem)]"
+          >
+            {SITE.instagramHandle}
+          </a>
+          <p className="mt-6 max-w-xl text-lg text-ink/75">
+            Активно веду блог: показываю отгрузки, склад, новые поступления и объекты. Подписывайтесь, чтобы видеть,
+            как идёт работа.
+          </p>
+        </div>
+        <div data-reveal style={delay(120)} className="lg:col-span-4 lg:justify-self-end">
+          <a href={SITE.instagram} target="_blank" rel="noopener noreferrer" className={BTN.light}>
+            <InstagramIcon className="size-5" />
+            Подписаться
+          </a>
         </div>
       </div>
     </section>
@@ -270,22 +353,22 @@ export function Reviews() {
 
 /* ---------- 7. Частые вопросы ---------- */
 
-const FAQ = [
+export const FAQ = [
   {
     q: "Куда возите и сколько стоит доставка?",
     a: "Вожу по Салаватскому району и всему северо-востоку Башкортостана. Цена зависит от расстояния и объёма, называю её сразу, вместе с ценой товара. Арматуру в небольшом количестве могу привезти легковым прицепом.",
   },
   {
     q: "Как можно оплатить?",
-    a: "[Наличными, переводом на карту, по счёту: уточнить.] Оплата при получении или по договорённости [уточнить].",
+    a: "Способ оплаты и график платежей обговариваем индивидуально: подойдёт практически любой удобный вам вариант.",
   },
   {
     q: "Какой минимальный заказ?",
-    a: "Цемент оптом от 1 тонны, от фуры считаю цену отдельно. По остальным товарам минимального заказа нет [уточнить]. Звоните, даже если нужно немного.",
+    a: "Цемент продаём от 1 тонны. Объём от фуры считается оптом, оптовую цену обговариваем индивидуально. По остальным позициям минимального объёма нет: берите столько, сколько нужно, подход к каждому индивидуальный.",
   },
   {
     q: "Работаете с юрлицами?",
-    a: "[Да или нет: уточнить.] Выставляю счёт, закрывающие документы [уточнить: с НДС или без].",
+    a: "Да, работаю с юридическими лицами. Есть ЭДО. Оплата только с НДС.",
   },
   {
     q: "Можно приехать и посмотреть товар?",
